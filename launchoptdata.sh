@@ -1,0 +1,1 @@
+IoTDBOpt\iotdb-server-2.0.2\sbin\start-datanode.bat
