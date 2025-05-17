@@ -15,6 +15,7 @@ public class IoTDB {
     public static String[] sensor = {"voltage","humi1","humi2","radius","srcad1","srcad2","srcad0","alarm"};
     public static String minT = "2023-03-15T11:57:16.427";
     public static long duration = 3647726504L;
+    public static int ROUND = 2;
 
     public static void benchmark() throws SQLException, IOException {
         Connection connection = getConnection();
@@ -30,7 +31,7 @@ public class IoTDB {
             System.out.println(e.getMessage());
         }
 
-        FileWriter fw = new FileWriter("./result/iotdb-opt.txt");
+        FileWriter fw = new FileWriter("./result/iotdb.txt");
         long t1 = RangeQuery(statement);
         fw.write(t1 + "\n");
         System.out.println(t1);
@@ -48,7 +49,7 @@ public class IoTDB {
 
     public static long RangeQuery(Statement stmt) throws SQLException {
         long time = System.currentTimeMillis();
-        int round = 10;
+        int round = ROUND;
         while(round!=0) {
             for (String path : ts) {
                 for (String s : sensor) {
@@ -63,7 +64,7 @@ public class IoTDB {
 
     public static long ValRangeQuery(Statement stmt) throws SQLException {
         long time = System.currentTimeMillis();
-        int round = 10;
+        int round = ROUND;
         while(round!=0) {
             for (String path : ts) {
                 for (String s : sensor) {
@@ -78,7 +79,7 @@ public class IoTDB {
 
     public static long joinQuery(Statement stmt) throws SQLException {
         long time = System.currentTimeMillis();
-        int round = 10;
+        int round = ROUND;
         while(round!=0) {
             String path1 = ts[0];
             String path2 = ts[1];
@@ -93,11 +94,11 @@ public class IoTDB {
 
     public static long aggQuery(Statement stmt) throws SQLException {
         long time = System.currentTimeMillis();
-        int round = 10;
+        int round = ROUND;
         while(round!=0) {
             for (String path : ts) {
                 for (String s : sensor) {
-                    String sql = String.format("select avg(%s) from %s where Time > %s and Time < %s+%s", path + "." + s, db, minT, minT, duration);
+                    String sql = String.format("select avg(%s) from %s where Time > %s and Time < %s+%s", path + "." + s, db, minT, minT, duration/2);
                     stmt.execute(sql);
                 }
             }
@@ -107,7 +108,7 @@ public class IoTDB {
     }
 
     public void remove(Statement stmt) throws SQLException {
-        stmt.execute("delete database root;");
+        stmt.execute("delete database root.**;");
     }
 
     public static Connection getConnection() {

@@ -1,1 +1,1 @@
-IoTDB\iotdb-server-2.0.2\sbin\start-datanode.bat
+bash IoTDB/iotdb-server-2.0.2/sbin/start-datanode.sh
